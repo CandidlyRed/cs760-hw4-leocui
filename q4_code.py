@@ -131,8 +131,8 @@ class NN(nn.Module):
         self.flatten = nn.Flatten()
         self.w1 = nn.Linear(28*28, 300)
         self.w2 = nn.Linear(300, 200)
-        nn.init.uniform_(self.w1.weight, a=0, b=1)
-        nn.init.uniform_(self.w1.weight, a=0, b=1)
+        nn.init.uniform_(self.w1.weight, a=-1, b=1)
+        nn.init.uniform_(self.w1.weight, a=-1, b=1)
         self.stack = nn.Sequential(
             self.w1,
             nn.Sigmoid(),
