@@ -125,7 +125,6 @@ mTestset = datasets.MNIST(
     )
 
 class NN(nn.Module):
-
     def __init__(self):
         super().__init__()
         self.flatten = nn.Flatten()
@@ -138,7 +137,6 @@ class NN(nn.Module):
             nn.Sigmoid(),
             self.w2,
         )
-    
     def forward(self, x):
         x = self.flatten(x)
         logits = self.stack(x)
@@ -154,25 +152,22 @@ def training(dataloader, model, lossFunc, optimizer):
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
-
         if batch % 100 == 0:
             loss, current = loss.item(), (batch + 1) * len(X)
-    
     trainLoss.append(loss.item())
     
 def testing(dataloader, model, lossFunc):
-    size = len(dataloader.dataset)
     num_batches = len(dataloader)
-    test_loss, correct = 0, 0
-
+    size = len(dataloader.dataset)
+    correct = 0
+    testLossVal = 0
     with torch.no_grad():
-        for X, y in dataloader:
-            pred = model(X)
-            test_loss += lossFunc(pred, y).item()
+        for x, y in dataloader:
+            pred = model(x)
+            testLossVal += lossFunc(pred, y).item()
             correct += (pred.argmax(dim=1) == y).sum().item()
-
-    test_loss /= num_batches
-    testLoss.append(test_loss)
+    testLossVal /= num_batches
+    testLoss.append(testLossVal)
     correct /= size
     testErrors.append(correct)
 
@@ -181,14 +176,12 @@ testDataLoader = DataLoader(mTestset, batch_size=32, shuffle=True)
 lossFunc = nn.CrossEntropyLoss()
 optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
 
-
-
 for i in range(20):
     training(trainDataLoader, model, lossFunc, optimizer)
     testing(testDataLoader, model, lossFunc)
 
 for i in range(20):
-    print(i+1, "&", round((1 - testErrors[i])*100, 4), "\%", "\\\\")
+    print(i+1, round((1 - testErrors[i])*100, 4)")
 
 plt.plot(range(len(trainLoss)), trainLoss, label='train loss')
 plt.plot(range(len(testLoss)), testLoss, label='test loss')
